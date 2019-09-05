@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.DataProtection;
 using Owin;
 
 [assembly: OwinStartup(typeof(EpiserverAlloyPassword.Startup))]
@@ -18,10 +19,12 @@ namespace EpiserverAlloyPassword
         {
 
             // Add CMS integration for ASP.NET Identity
-            app.AddCmsAspNetIdentity<ApplicationUser>();
+            //app.AddCmsAspNetIdentity<ApplicationUser>();
+            app.SetupCustomAspNetIdentity<ApplicationUser>();
 
             // Remove to block registration of administrators
             app.UseAdministratorRegistrationPage(() => HttpContext.Current.Request.IsLocal);
+
 
             // Use cookie authentication
             app.UseCookieAuthentication(new CookieAuthenticationOptions
