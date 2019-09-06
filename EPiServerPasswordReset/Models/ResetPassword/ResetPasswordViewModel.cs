@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
-namespace EpiserverAlloyPassword.Models
+namespace EPiServerPasswordReset.Models
 {
     public class ResetPasswordViewModel
     {

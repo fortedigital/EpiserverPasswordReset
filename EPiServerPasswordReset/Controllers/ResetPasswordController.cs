@@ -1,8 +1,8 @@
 ﻿using EPiServer.Cms.UI.AspNetIdentity;
-using EpiserverAlloyPassword.Models;
+using EPiServerPasswordReset.Models;
 using System.Web.Mvc;
 
-namespace EpiserverAlloyPassword.Controllers
+namespace EPiServerPasswordReset.Controllers
 {
 
     public class ResetPasswordController : Controller
@@ -11,7 +11,7 @@ namespace EpiserverAlloyPassword.Controllers
 
         public ResetPasswordController()
         {
-            manager = UserManagerProvider.manager;
+            manager = UserManagerProvider.Manager;
         }
 
         // GET: ResetPassword

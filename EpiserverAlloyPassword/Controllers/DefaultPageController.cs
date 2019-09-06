@@ -4,6 +4,7 @@ using EPiServer;
 using EPiServer.Framework.DataAnnotations;
 using EpiserverAlloyPassword.Models.Pages;
 using EpiserverAlloyPassword.Models.ViewModels;
+using EPiServerPasswordReset;
 
 namespace EpiserverAlloyPassword.Controllers
 {
@@ -39,7 +40,7 @@ namespace EpiserverAlloyPassword.Controllers
 
         public ActionResult Action()
         {
-            var module = new ResettingModule();
+            var module = new PasswordResetModule();
             module.Run();
             return new RedirectResult("/");
         }

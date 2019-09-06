@@ -17,7 +17,6 @@ using EPiServer.Find.Api.Querying.Queries;
 using EpiserverAlloyPassword.Controllers;
 using EPiServer.Web;
 using EPiServer.Find.Cms;
-using EpiserverAlloyPassword.Models.Pages;
 
 namespace EpiserverAlloyPassword.Controllers
 {

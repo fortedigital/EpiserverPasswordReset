@@ -9,12 +9,6 @@ namespace EpiserverAlloyPassword
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-        
-            RouteTable.Routes.MapRoute(
-                    "resetPasswordRoute",
-                    "util/resetpassword",
-                    new { controller = "ResetPassword", action = "Index", id = UrlParameter.Optional }
-                );
 
             //Tip: Want to call the EPiServer API on startup? Add an initialization module instead (Add -> New Item.. -> EPiServer -> Initialization Module)
         }

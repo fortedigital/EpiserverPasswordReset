@@ -19,7 +19,7 @@
         <div class="row">
             <div class="span12">
 
-                <h2>Reset Password</h2><br />
+                <h2>Reset Password</h2>
 
                 @using (Html.BeginForm("/", "ResetPassword", FormMethod.Post))
                 {
@@ -37,7 +37,7 @@
                         @Html.ValidationMessageFor(m => m.ConfirmPassword)
                     </div>
                     <div class="control-group">
-                        <input type="submit" class="" value="Reset password" />
+                        <input type="submit" class="" value="Register" />
                     </div>
                 }
             </div>
