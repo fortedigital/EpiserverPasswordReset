@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+
+@using System.Web.Optimization
+@using EpiserverAlloyPassword.Controllers
+@model EpiserverAlloyPassword.Models.ResetPasswordViewModel
+@{
+    Layout = "";
+}
+
+<html>
+<head>
+    <title>Reset Password</title>
+    @Styles.Render("~/bundles/css")
+    @Scripts.Render("~/bundles/js")
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+
+                <h2>Reset Password</h2>
+
+                @using (Html.BeginForm("/", "ResetPassword", FormMethod.Post))
+                {
+                    @Html.HiddenFor(m => m.HiddenUserId)
+                    @Html.HiddenFor(m => m.HiddenToken)
+                    @Html.AntiForgeryToken()
+                    <div class="control-group">
+                        @Html.LabelFor(m => m.Password)
+                        @Html.PasswordFor(m => m.Password)
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+                    <div class="control-group">
+                        @Html.LabelFor(m => m.ConfirmPassword)
+                        @Html.PasswordFor(m => m.ConfirmPassword)
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword)
+                    </div>
+                    <div class="control-group">
+                        <input type="submit" class="" value="Register" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -36,5 +36,13 @@ namespace EpiserverAlloyPassword.Controllers
             var type = typeof(PageViewModel<>).MakeGenericType(page.GetOriginalType());
             return Activator.CreateInstance(type, page) as IPageViewModel<SitePageData>;
         }
+
+        public ActionResult Action()
+        {
+            var module = new ResettingModule();
+            module.Run();
+            return new RedirectResult("/");
+        }
+       
     }
 }
