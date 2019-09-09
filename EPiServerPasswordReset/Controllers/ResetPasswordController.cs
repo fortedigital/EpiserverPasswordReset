@@ -1,5 +1,7 @@
 ﻿using EPiServer.Cms.UI.AspNetIdentity;
+using EPiServer.ServiceLocation;
 using EPiServerPasswordReset.Models;
+using Microsoft.AspNet.Identity;
 using System.Web.Mvc;
 
 namespace EPiServerPasswordReset.Controllers
@@ -7,11 +9,13 @@ namespace EPiServerPasswordReset.Controllers
 
     public class ResetPasswordController : Controller
     {
-        private readonly ApplicationUserManager<ApplicationUser> manager;
+        public const string ResetRouteName = "resetPasswordRoute";
 
-        public ResetPasswordController()
+        private readonly UserManager<ApplicationUser> manager;
+
+        public ResetPasswordController(UserManager<ApplicationUser> userManager)
         {
-            manager = UserManagerProvider.Manager;
+            this.manager = userManager;
         }
 
         // GET: ResetPassword
@@ -43,6 +47,13 @@ namespace EPiServerPasswordReset.Controllers
                 }
             }
             return View(model);
+        }
+
+        public static string GetUrlForReset(ApplicationUser user, string token)
+        {
+            var urlHelper = ServiceLocator.Current.GetInstance<UrlHelper>();
+            var resetPasswordUrl = urlHelper.RouteUrl(ResetRouteName, new { user = user.Id, token = token }, System.Web.HttpContext.Current.Request.Url.Scheme);
+            return resetPasswordUrl;
         }
     }
 }

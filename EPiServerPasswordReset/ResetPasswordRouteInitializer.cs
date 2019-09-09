@@ -2,6 +2,7 @@
 using System.Web.Routing;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
+using EPiServerPasswordReset.Controllers;
 
 namespace EPiServerPasswordReset
 {
@@ -12,7 +13,7 @@ namespace EPiServerPasswordReset
         {
 
             RouteTable.Routes.MapRoute(
-                    "resetPasswordRoute",
+                    ResetPasswordController.ResetRouteName,
                     "util/resetpassword",
                     new { controller = "ResetPassword", action = "Index", id = UrlParameter.Optional }
                 );

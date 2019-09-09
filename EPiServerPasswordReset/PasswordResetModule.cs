@@ -1,55 +1,63 @@
 ﻿using EPiServer.Cms.UI.AspNetIdentity;
+using EPiServerPasswordReset.Controllers;
+using Microsoft.AspNet.Identity;
+using System;
 using System.Net.Mail;
+using System.Net.Mime;
 
 namespace EPiServerPasswordReset
 {
     public class PasswordResetModule
     {
+        private readonly UserManager<ApplicationUser> manager;
+        private readonly IResetPasswordEmailTemplate emailTemplate;
 
-        private readonly ApplicationUserManager<ApplicationUser> manager;
-
-        public PasswordResetModule()
+        public PasswordResetModule(UserManager<ApplicationUser> userManager, IResetPasswordEmailTemplate template)
         {
-            manager = UserManagerProvider.Manager;
+            this.emailTemplate = template;
+            this.manager = userManager;
         }
 
         public void SendResetPasswordMail(ApplicationUser user)
         {
-            if (user == null) return;
+            if (user == null) throw new ArgumentNullException();
 
             var token = manager.GeneratePasswordResetTokenAsync(user.Id).Result;
-            var message = GetMessageBody(user, token);
-            SendMail(user.Email, message);
+            SendMail(user, token);
         }
 
-        //TODO: to be removed
-        public void Run()
+        private void SendMail(ApplicationUser user, string token)
         {
-            var user = GetApplicationUser("epiadmin");
-            SendResetPasswordMail(user);
-        }
+            var content = this.emailTemplate.GetEmailContent(user.Username, ResetPasswordController.GetUrlForReset(user, token));
 
-        //TODO: to be removed
-        private ApplicationUser GetApplicationUser(string name)
-        {
-            return manager.FindByNameAsync(name).Result;
-        }
-
-        private static void SendMail(string recipientAddress, string messageBody)
-        {
             var message = new MailMessage();
-            message.To.Add(new MailAddress(recipientAddress));
-            message.Subject = "Password Reset";
-            message.Body = messageBody;
+            message.To.Add(new MailAddress(user.Email));
+            message.Subject = content.Subject;
+            CreateMessageViews(message, content);
 
             var smtpClient = new SmtpClient();
             smtpClient.Send(message);
         }
 
-        private static string GetMessageBody(ApplicationUser user, string token)
+        private void CreateMessageViews(MailMessage message, ResetPasswordEmailContent content)
         {
-            return $"Hello {user.Username}. Please follow this link to reset your password: http://localhost:54778/util/resetpassword?user={user.Id}&token={token}";
-        }
+            if (content.HtmlBody == null && content.TextBody == null)
+                throw new NullReferenceException("Both body properties in content object were null");
 
+            if(content.TextBody != null)
+            {
+                message.Body = content.TextBody;
+                if(content.HtmlBody != null){
+                    var mimeType = new ContentType("text/html");
+                    var alternateView = AlternateView.CreateAlternateViewFromString(content.HtmlBody, mimeType);
+                    message.AlternateViews.Add(alternateView);
+                }
+            }
+            else
+            {
+                message.Body = content.HtmlBody;
+                message.IsBodyHtml = true;
+            }
+        }
     }
 }

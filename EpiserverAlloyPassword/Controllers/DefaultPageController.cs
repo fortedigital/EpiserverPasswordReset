@@ -1,10 +1,12 @@
 using System;
 using System.Web.Mvc;
 using EPiServer;
+using EPiServer.Cms.UI.AspNetIdentity;
 using EPiServer.Framework.DataAnnotations;
 using EpiserverAlloyPassword.Models.Pages;
 using EpiserverAlloyPassword.Models.ViewModels;
 using EPiServerPasswordReset;
+using Microsoft.AspNet.Identity;
 
 namespace EpiserverAlloyPassword.Controllers
 {
@@ -20,6 +22,15 @@ namespace EpiserverAlloyPassword.Controllers
     [TemplateDescriptor(Inherited = true)]
     public class DefaultPageController : PageControllerBase<SitePageData>
     {
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly PasswordResetModule passwordResetModule;
+
+        public DefaultPageController(UserManager<ApplicationUser> userManager, PasswordResetModule passwordResetModule)
+        {
+            this.userManager = userManager;
+            this.passwordResetModule = passwordResetModule;
+        }
+
         public ViewResult Index(SitePageData currentPage)
         {
             var model = CreateModel(currentPage);
@@ -40,10 +51,9 @@ namespace EpiserverAlloyPassword.Controllers
 
         public ActionResult Action()
         {
-            var module = new PasswordResetModule();
-            module.Run();
-            return new RedirectResult("/");
+            var user = this.userManager.FindByNameAsync("epiadmin").Result;
+            this.passwordResetModule.SendResetPasswordMail(user);
+            return Redirect("/");
         }
-       
     }
 }
