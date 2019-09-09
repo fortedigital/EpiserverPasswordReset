@@ -1,6 +1,5 @@
 ﻿using EPiServer.Cms.UI.AspNetIdentity;
-using MailKit.Net.Smtp;
-using MimeKit;
+using System.Net.Mail;
 
 namespace EPiServerPasswordReset
 {
@@ -19,7 +18,8 @@ namespace EPiServerPasswordReset
             if (user == null) return;
 
             var token = manager.GeneratePasswordResetTokenAsync(user.Id).Result;
-            SendMail(user, token);
+            var message = GetMessageBody(user, token);
+            SendMail(user.Email, message);
         }
 
         //TODO: to be removed
@@ -35,29 +35,15 @@ namespace EPiServerPasswordReset
             return manager.FindByNameAsync(name).Result;
         }
 
-        private static void SendMail(ApplicationUser user, string token)
+        private static void SendMail(string recipientAddress, string messageBody)
         {
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("mikolaj.dlus@fortedigital.no"));
-            //message.To.Add(new MailboxAddress(user.Email));
-            message.To.Add(new MailboxAddress("mikolaj.dlus@fortedigital.no"));
+            var message = new MailMessage();
+            message.To.Add(new MailAddress(recipientAddress));
             message.Subject = "Password Reset";
-            message.Body = new TextPart("plain")
-            {
-                Text = GetMessageBody(user, token)
-            };
-            //simulate sending email
-            //using (var stream = System.IO.File.OpenWrite("E:/Dev/Repos/mail_log.txt"))
-            //{
-            //    message.WriteTo(stream);
-            //}
-            using(var client = new SmtpClient())
-            {
-                client.Connect("smtp.office365.com", 587, false);
-                client.Authenticate("mikolaj.dlus@fortedigital.no", "M$970920");
-                client.Send(message);
-                client.Disconnect(true);
-            }
+            message.Body = messageBody;
+
+            var smtpClient = new SmtpClient();
+            smtpClient.Send(message);
         }
 
         private static string GetMessageBody(ApplicationUser user, string token)
