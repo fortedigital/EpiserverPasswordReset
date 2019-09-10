@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("EPiServerPasswordReset")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Password reset email notification plugin for EPiServer")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Forte_ Digital")]
 [assembly: AssemblyProduct("EPiServerPasswordReset")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
