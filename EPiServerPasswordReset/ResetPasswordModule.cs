@@ -7,22 +7,22 @@ using System.Net.Mime;
 
 namespace EPiServerPasswordReset
 {
-    public class PasswordResetModule
+    public class ResetPasswordModule
     {
         private readonly UserManager<ApplicationUser> manager;
         private readonly IResetPasswordEmailTemplate emailTemplate;
 
-        public PasswordResetModule(UserManager<ApplicationUser> userManager, IResetPasswordEmailTemplate template)
+        public ResetPasswordModule(UserManager<ApplicationUser> userManager, IResetPasswordEmailTemplate template)
         {
             this.emailTemplate = template;
             this.manager = userManager;
         }
 
-        public void SendResetPasswordMail(ApplicationUser user)
+        public async void SendResetPasswordMail(ApplicationUser user)
         {
             if (user == null) throw new ArgumentNullException();
 
-            var token = manager.GeneratePasswordResetTokenAsync(user.Id).Result;
+            var token = await manager.GeneratePasswordResetTokenAsync(user.Id);
             SendMail(user, token);
         }
 

@@ -35,6 +35,9 @@
                         @Html.ValidationMessageFor(m => m.ConfirmPassword)
                     </div>
                     <div class="control-group">
+                        @Html.ValidationMessage(EPiServerPasswordReset.Controllers.ResetPasswordController.ErrorKey)
+                    </div>
+                    <div class="control-group">
                         <input type="submit" class="" value="Reset Password" />
                     </div>
                 }

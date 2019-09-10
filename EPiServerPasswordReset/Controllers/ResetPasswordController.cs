@@ -2,6 +2,7 @@
 using EPiServer.ServiceLocation;
 using EPiServerPasswordReset.Models;
 using Microsoft.AspNet.Identity;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace EPiServerPasswordReset.Controllers
@@ -10,6 +11,7 @@ namespace EPiServerPasswordReset.Controllers
     public class ResetPasswordController : Controller
     {
         public const string ResetRouteName = "resetPasswordRoute";
+        public const string ErrorKey = "ResetError";
 
         private readonly UserManager<ApplicationUser> manager;
 
@@ -19,10 +21,11 @@ namespace EPiServerPasswordReset.Controllers
         }
 
         // GET: ResetPassword
-        public ActionResult Index(string user, string token)
+        public async Task<ActionResult> Index(string user, string token)
         {
             token = token.Replace(' ', '+');
-            if(manager.VerifyUserTokenAsync(user, "ResetPassword", token).Result)
+            var isVerified = await manager.VerifyUserTokenAsync(user, "ResetPassword", token);
+            if (isVerified)
             {
                 var model = new ResetPasswordViewModel()
                 {
@@ -36,14 +39,21 @@ namespace EPiServerPasswordReset.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(ResetPasswordViewModel model)
+        public async Task<ActionResult> Index(ResetPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if(manager.VerifyUserTokenAsync(model.HiddenUserId, "ResetPassword", model.HiddenToken).Result)
+                var isVerified = await manager.VerifyUserTokenAsync(model.HiddenUserId, "ResetPassword", model.HiddenToken);
+                if (isVerified)
                 {
-                    manager.ResetPasswordAsync(model.HiddenUserId, model.HiddenToken, model.Password);
-                    return Redirect("/util/login.aspx");
+                    var result = await manager.ResetPasswordAsync(model.HiddenUserId, model.HiddenToken, model.Password);
+                    if(result.Succeeded)
+                        return Redirect("/util/login.aspx");
+
+                    foreach(var error in result.Errors)
+                    {
+                        ModelState.AddModelError(ErrorKey, error);
+                    }
                 }
             }
             return View(model);
@@ -52,7 +62,8 @@ namespace EPiServerPasswordReset.Controllers
         public static string GetUrlForReset(ApplicationUser user, string token)
         {
             var urlHelper = ServiceLocator.Current.GetInstance<UrlHelper>();
-            var resetPasswordUrl = urlHelper.RouteUrl(ResetRouteName, new { user = user.Id, token = token }, System.Web.HttpContext.Current.Request.Url.Scheme);
+            var resetPasswordUrl = urlHelper.RouteUrl(ResetRouteName, new { user = user.Id, token = token }, 
+                                                        System.Web.HttpContext.Current.Request.Url.Scheme);
             return resetPasswordUrl;
         }
     }
