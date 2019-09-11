@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using System;
 using System.Net.Mail;
 using System.Net.Mime;
+using EPiServerPasswordReset.Templates;
 
 namespace EPiServerPasswordReset
 {

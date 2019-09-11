@@ -1,4 +1,6 @@
-﻿namespace EPiServerPasswordReset.Templates
+﻿using EPiServerPasswordReset.Models;
+
+namespace EPiServerPasswordReset.Templates
 {
     public class DefaultResetPasswordEmailTemplate : IResetPasswordEmailTemplate
     {
