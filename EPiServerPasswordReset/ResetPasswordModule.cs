@@ -1,5 +1,6 @@
 ﻿using EPiServer.Cms.UI.AspNetIdentity;
 using EPiServerPasswordReset.Controllers;
+using EPiServerPasswordReset.Models;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Net.Mail;

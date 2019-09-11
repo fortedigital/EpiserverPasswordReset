@@ -1,4 +1,4 @@
-﻿namespace EPiServerPasswordReset
+﻿namespace EPiServerPasswordReset.Models
 {
     public class ResetPasswordEmailContent
     {
